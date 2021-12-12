@@ -4,20 +4,20 @@
       <hr><br><br>
       <alert :message=message v-if="showMessage"></alert>
       <div class="d-flex justify-content-left">
-        <b-form @submit="onSubmit">
+        <form @submit="onSubmit">
           <label class="sr-only mb-2" for="form-input-name">Symbol</label>
           <div class="input-group">
-            <b-form-input
+            <input class="form-control"
               id="form-title-input"
               type="text"
               v-model="addSymbolForm.symbol"
               required
               placeholder="BTC"
               style="text-transform: uppercase;"
-            ></b-form-input>
-            <b-button type="submit" variant="success">Add Symbol</b-button>
+            >
+            <button class="btn btn-success" type="submit">Add Symbol</button>
           </div>
-        </b-form>
+        </form>
       </div>
 
       <br><br>
