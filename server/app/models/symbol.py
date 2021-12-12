@@ -45,20 +45,8 @@ class Symbol:
 
     for symbol in symbols:
       if(symbol['symbol'] == symbol_id):
-        self.symbol = symbol['symbol']
-        self.currency_pair = symbol['currency_pair']
-        self.average_buy = symbol['average_buy']
-        self.average_sell = symbol['average_sell']
-        self.executed_buy = symbol['executed_buy']
-        self.executed_sell = symbol['executed_sell']
-        self.net_executed = symbol['net_executed']
-        self.profit = symbol['profit']
-        self.global_average = symbol['global_average']
-        self.commission = symbol['commission']
-        self.tick_size = symbol['tick_size']
-        self.step_size = symbol['step_size']
-        break
-    return self.to_dict()
+        return symbol
+    return {"error": "OK!"}
 
   def remove(self, symbol_id):
     data = self.get_symbols()
@@ -102,7 +90,7 @@ class Symbol:
       data.append(self.to_dict())
     with open(SYMBOLS_FILE, 'w') as outfile:
       json.dump(data, outfile, indent=2)
-      
+
   def Calculate(self):
     self.currency_pair = self.symbol + 'USDT'
 
