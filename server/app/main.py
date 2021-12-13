@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, make_response
 from flask_cors import CORS
 
 from app.models import Symbol
@@ -18,13 +18,18 @@ CORS(app, resources={r'/*': {'origins': '*'}})
 def all_symbols():
   sym = Symbol()
   response_object = {'status': 'success'}
+
   if request.method == 'POST':
     post_data = request.get_json()
-    sym.symbol = post_data.get("symbol")
-    sym.save()
-
     response_object['message'] = 'Symbol added!'
-  else:
+    response = sym.save(post_data.get("symbol"))
+    if response['status'] == False:
+      response_object = {
+        'status': 'error',
+        'message': response['message']
+      }
+    
+  elif request.method == 'GET':
     response_object['symbols'] = sym.get_symbols()
 
   return jsonify(response_object)
@@ -33,14 +38,22 @@ def all_symbols():
 def single_symbol(symbol_id):
   sym = Symbol()
   response_object = {'status': 'success'}
+
   if request.method == 'DELETE':
-    sym.remove(symbol_id)
     response_object['message'] = 'Symbol removed!'
-  else:
-    SYMBOLS = sym.get_symbols()
-    for symbol in SYMBOLS:
-      if symbol['symbol'] == symbol_id:
-        response_object['symbol'] = symbol
+    if sym.remove(symbol_id) == False:
+      response_object = {
+        'status': 'error',
+        'message': 'Symbol not found!'
+      }
+    
+  elif request.method == 'GET':
+    response_object['symbol'] = sym.get_symbol(symbol_id)    
+    if response_object['symbol'] == None:
+      response_object = {
+        'status': 'error',
+        'message': 'Symbol not found!'
+      }
 
   return jsonify(response_object)
 
@@ -62,3 +75,8 @@ def user(username):
     response_object['user'] = user.find(username)
 
   return jsonify(response_object)
+
+@app.errorhandler(404)
+def not_found(error):
+  response_object = {'status': 'error'}
+  return make_response(jsonify(response_object), 404)

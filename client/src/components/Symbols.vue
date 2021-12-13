@@ -2,7 +2,7 @@
   <div class="container">
       <h1>Symbols</h1>
       <hr><br><br>
-      <alert :message=message v-if="showMessage"></alert>
+      <alert :message=message @closeAlert="showMessage = $event" v-if="showMessage"></alert>
       <div class="d-flex justify-content-left">
         <form @submit="onSubmit">
           <label class="sr-only mb-2" for="form-input-name">Symbol</label>
